@@ -1,8 +1,8 @@
 import json as j,os,urllib.request as u
 U=os.environ["MAKEFUN_ENV_URL"]
 P=lambda p,b:j.load(u.urlopen(U+p,data=j.dumps(b).encode()))
-V=(0,100,320,330,500,900,0);N=(-33,-31,-18,-14,14,18,31,33);K=(-17,-16,-15,-1,1,15,16,17);I=(-17,-15,15,17);R=(-16,-1,1,16);A=(0,0,4,8,14,24,40,0);KK=(20,25,10,0,0,10,25,20);CR={0:2,7:1,112:8,119:4,4:3,116:12}
-B=[0]*128;S=1;G=0;E=-1;KP=[0,0];ND=[0];LIM=60000;ST=[];SK=lambda m:-V[abs(B[m>>7&127])];BM=[0]
+V=(0,100,320,330,500,900,0);N=(-33,-31,-18,-14,14,18,31,33);K=(-17,-16,-15,-1,1,15,16,17);I=(-17,-15,15,17);R=(-16,-1,1,16);A=(0,0,4,8,14,24,40,0);CR={0:2,7:1,112:8,119:4,4:3,116:12};DS=(0,0,N,I,R,I+R,K)
+B=[0]*128;S=1;G=0;E=-1;KP=[0,0];ND=[0];LIM=100000;ST=[];SK=lambda m:-V[abs(B[m>>7&127])];BM=[0];TT={}
 def F(f):
  global B,S,G,E,KP
  B=[0]*128;KP=[0,0];p=f.split();s=112
@@ -59,7 +59,7 @@ def M():
      a(q|to<<7)
      if o==d and q>>4==st and not B[q+2*d]:a(q|(q+2*d)<<7)
   else:
-   ds=N if t==2 else K if t==6 else I if t==3 else R if t==4 else I+R;sl=t>2 and t!=6
+   ds=DS[t];sl=t>2 and t!=6
    for o in ds:
     to=q+o
     while not to&136:
@@ -99,8 +99,8 @@ def Y():
   if t==1:x=A[rr]
   elif t==2:x=6*c-20
   elif t==3:x=4*c-8
-  elif t==4:x=15 if rr==6 else 0
-  elif t==6:x=KK[f] if rr==0 else max(-50,-15*rr)
+  elif t==4:x=0
+  elif t==6:x=max(-50,-15*rr)
   else:x=2*c-6
   s+=(V[t]+x)*(w*2-1)
  return s*S
@@ -109,7 +109,7 @@ def Q(a,b):
  if st>=b:return b
  if st>a:a=st
  chk=T(KP[S<0],-S)
- ms=M() if chk else[x for x in M() if B[x>>7&127] or x>>14 or(x>>7&127)==E]
+ ms=M() if chk else[x for x in M() if B[x>>7&127] or x>>14 or x>>7&127==E]
  ms.sort(key=SK)
  for m in ms:
   D(m)
@@ -122,6 +122,8 @@ def Z(a,b,d,pl):
  ND[0]+=1
  if ND[0]>LIM:raise StopIteration
  if d<=0:return Q(a,b)
+ ky=(tuple(B),S,G,E);e=TT.get(ky)
+ if e and e[0]>=d:return e[1]
  ms=M();ms.sort(key=SK);be=-10**9;bm=0
  for m in ms:
   D(m)
@@ -133,13 +135,13 @@ def Z(a,b,d,pl):
   if a>=b:break
  if be==-10**9:return 0 if T(KP[S<0],-S) else-100000+pl
  if pl==0:BM[0]=bm
+ elif abs(be)<90000:TT[ky]=(d,be)
  return be
 def H(lg):
- ND[0]=0;F(FN)
+ ND[0]=0;TT.clear();F(FN)
  for d in range(1,12):
   try:Z(-10**9,10**9,d,0)
   except StopIteration:break
-  if ND[0]>LIM:break
  be=BM[0]
  if not be:return lg[0]
  f=be&127;t=be>>7&127
