@@ -2,7 +2,7 @@ import json as j,os,urllib.request as u
 U=os.environ["MAKEFUN_ENV_URL"]
 P=lambda p,b:j.load(u.urlopen(U+p,data=j.dumps(b).encode()))
 V=(0,100,320,330,500,900,0);N=(-33,-31,-18,-14,14,18,31,33);K=(-17,-16,-15,-1,1,15,16,17);I=(-17,-15,15,17);R=(-16,-1,1,16);A=(0,0,4,8,14,24,40,0);CR={0:2,7:1,112:8,119:4,4:3,116:12};DS=(0,0,N,I,R,I+R,K)
-B=[0]*128;S=1;G=0;E=-1;KP=[0,0];ND=[0];LIM=100000;ST=[];SK=lambda m:-V[abs(B[m>>7&127])];BM=[0];TT={}
+B=[0]*128;S=1;G=0;E=-1;KP=[0,0];ND=[0];LIM=100000;ST=[];SK=lambda m:-V[abs(B[m>>7&127])];BM=[0]
 def F(f):
  global B,S,G,E,KP
  B=[0]*128;KP=[0,0];p=f.split();s=112
@@ -122,23 +122,23 @@ def Z(a,b,d,pl):
  ND[0]+=1
  if ND[0]>LIM:raise StopIteration
  if d<=0:return Q(a,b)
- ky=(tuple(B),S,G,E);e=TT.get(ky)
- if e and e[0]>=d:return e[1]
  ms=M();ms.sort(key=SK);be=-10**9;bm=0
- for m in ms:
+ for i,m in enumerate(ms):
   D(m)
   if T(KP[S>0],S):W();continue
-  sc=-Z(-b,-a,d-1,pl+1)
+  if i==0:sc=-Z(-b,-a,d-1,pl+1)
+  else:
+   sc=-Z(-a-1,-a,d-1,pl+1)
+   if a<sc<b:sc=-Z(-b,-a,d-1,pl+1)
   W()
   if sc>be:be=sc;bm=m
   if sc>a:a=sc
   if a>=b:break
  if be==-10**9:return 0 if T(KP[S<0],-S) else-100000+pl
  if pl==0:BM[0]=bm
- elif abs(be)<90000:TT[ky]=(d,be)
  return be
 def H(lg):
- ND[0]=0;TT.clear();F(FN)
+ ND[0]=0;F(FN)
  for d in range(1,12):
   try:Z(-10**9,10**9,d,0)
   except StopIteration:break
